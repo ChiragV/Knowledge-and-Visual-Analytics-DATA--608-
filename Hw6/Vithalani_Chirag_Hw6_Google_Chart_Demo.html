@@ -9,7 +9,7 @@
 	</script>
 	 <script type="text/javascript">
 	var arrayData="";
-	$.get("https://raw.githubusercontent.com/chirag-vithlani/Knowledge-and-Visual-Analytics-DATA--608-/master/Hw6/distance-to-frontier.csv", function(csvString) {
+	$.get("https://raw.githubusercontent.com/chirag-vithlani/Knowledge-and-Visual-Analytics-DATA--608-/master/Hw6/data/distance-to-frontier.csv", function(csvString) {
       // transform the CSV string into a 2-dimensional array
       arrayData = $.csv.toArrays(csvString, {onParseValue: $.csv.hooks.castToScalar});
 	

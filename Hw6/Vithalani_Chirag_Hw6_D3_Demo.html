@@ -96,7 +96,7 @@ var svg = d3.select("body").append("svg")
 
 svg.call(tip);
 
-d3.csv('https://raw.githubusercontent.com/chirag-vithlani/Knowledge-and-Visual-Analytics-DATA--608-/master/Hw6/distance-to-frontier.csv', function(data)
+d3.csv('https://raw.githubusercontent.com/chirag-vithlani/Knowledge-and-Visual-Analytics-DATA--608-/master/Hw6/data/distance-to-frontier.csv', function(data)
 {
   x.domain(data.map(function(d) { return d.Economy; }));
   y.domain([0, d3.max(data, function(d) { return d.Score; })]);
