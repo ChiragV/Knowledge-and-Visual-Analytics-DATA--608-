@@ -1,0 +1,131 @@
+---
+title: "Analyzing ease of doing business data <img src='http://www.iran-daily.com/content/imgcache/file/131555/0/image_650_365.jpg' width='15%'>"
+author: "Chirag Vithalani"
+date: "November 20, 2016"
+output: html_document
+---
+
+<style>
+hr {
+    border: 1px solid #357FAA;
+}
+</style>
+
+## Reading & visualizing "Ease of doing business" data.
+
+<hr />
+
+## Data Capturing
+
+```{r warning=FALSE,message=FALSE,echo=FALSE}
+#loading required library
+suppressWarnings(library(plotly))
+library(dplyr)
+library(tidyr)
+library(data.table)
+```
+
+### Step 1: Download data from below URLs
+
+1. Download from http://www.doingbusiness.org/data/distance-to-frontier and rename file to DistanceToFrontier.csv
+2. Download from http://www.doingbusiness.org/rankings and rename file to EconomyRankings.csv
+
+### Step 2 : Get three digit country code.
+
+Get three digit country code for each country/economy (through <a href="https://en.wikipedia.org/wiki/ISO_3166-1">Wikipedia</a> or other sources) and put them as first column - name it as "code" - in each of above files.
+
+### Step 3: Reading data
+
+```{r warning=FALSE,message=FALSE}
+suppressWarnings(library(plotly))
+economyRanking<-read.csv("EconomyRankings.csv")
+economyRanking<-subset(economyRanking, select=c("code","Economy", "Ease.of.Doing.Business.Rank"))
+
+#renaming column
+colnames(economyRanking)[3] <- "Rank"
+
+```
+
+
+
+### Step 4 : Visualizing
+
+```{r warning=FALSE,message=FALSE}
+
+l <- list(color = toRGB("grey"), width = 0.5)
+g <- list(
+  showframe = FALSE,
+  showcoastlines = FALSE,
+  projection = list(type = 'Mercator')
+)
+
+p <- plot_geo(economyRanking) %>%
+    add_trace(
+        z = ~Rank, color = ~Rank, 
+        text = ~Economy, locations = ~code, marker = list(line = l)
+    ) %>%
+    
+    layout(
+        title = 'Ease of doing business ranking on world map',
+        geo = g
+    )
+p
+```
+
+As we can see, mostly African nations and few middle east countries are at the bottom whereas countries on top and Australia at down has a good ranking.
+
+### Step 5: Reading Distance to Frontier data to observe data across years.
+
+#### Significant positive changes of countries over time
+
+Here we are getting countries whose ranking increased significantly from 2010 to 2017.
+
+```{r}
+
+yearWiseRanking<-economyRanking<-read.csv("DistanceToFrontier.csv",na.strings = "?",stringsAsFactors=FALSE)
+
+
+setnames(yearWiseRanking, old = c('DB.2010','DB.2011','DB.2012','DB.2013','DB.2014','DB.2015','DB.2016','DB.2017'), new = c('2010','2011','2012','2013','2014','2015','2016','2017'))
+
+yearWiseRanking$temp<-yearWiseRanking$'2017'-yearWiseRanking$`2010`
+year<-yearWiseRanking[order(-yearWiseRanking$temp),]
+head<-head(year,5)
+
+gatheredData<-gather(head, "Year", "scoreOutOf100", 2:8)
+
+
+
+p <- plot_ly(gatheredData, x = ~Year, y = ~Economy,  type = 'scatter', mode = 'markers', color = ~scoreOutOf100, 
+             marker = list(size = ~scoreOutOf100, opacity = 0.5),hoverinfo = 'text',text = ~paste('Year:',Year,', Economy:',Economy,', Score:',scoreOutOf100)) %>%
+    layout(autosize = F, width = 990, height = 500,title = 'Significant positive changes of countries over time',
+           xaxis = list(showgrid = FALSE),
+           yaxis = list(showgrid = FALSE))
+
+p
+
+```
+
+<br /><br />
+
+
+#### Significant negative changes of countries over time
+
+Here we are getting countries whose ranking decreased significantly from 2010 to 2017.
+
+
+
+```{r}
+
+head<-tail(subset(year, temp != 'NA'),5)
+gatheredData<-gather(head, "Year", "scoreOutOf100", 2:8)
+
+
+p <- plot_ly(gatheredData, x = ~Year, y = ~Economy,  type = 'scatter', mode = 'markers', color = ~scoreOutOf100, 
+             marker = list(size = ~scoreOutOf100, opacity = 0.5),hoverinfo = 'text',text = ~paste('Year:',Year,', Economy:',Economy,', Score:',scoreOutOf100)) %>%
+    layout(autosize = F, width = 990, height = 500,title = 'Significant negative changes of countries over time',
+           xaxis = list(showgrid = FALSE),
+           yaxis = list(showgrid = FALSE),showlegend = FALSE)
+
+p
+
+```
