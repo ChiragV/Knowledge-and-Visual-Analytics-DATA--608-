@@ -1,0 +1,33 @@
+---
+title: "Assignment-2"
+author: "Chirag Vithalani"
+date: "October 4, 2016"
+output: html_document
+---
+
+- combine the puto data
+
+```{r}
+
+files = list.files(path="C:\\Users\\chirag.vithalani\\Desktop\\CUNY\\Knowledge and Visual Analytics ( 608 )\\Hw2\\",pattern=".*\\.csv$",full.names=TRUE,recursive = TRUE)
+all_PLUTO_data = data.frame()
+
+for (file in files)
+{
+  tmp_data = read.csv(file, stringsAsFactors = FALSE)
+  tmp_data = tmp_data[tmp_data$YearBuilt > 1850 &tmp_data$YearBuilt <=2014 & tmp_data$LotArea > 100 & tmp_data$AssessTot < 10000000 & tmp_data$NumFloors != 0,]
+  tmp_data$filename = file
+  all_PLUTO_data = rbind(all_PLUTO_data,tmp_data[,c("YearBuilt","NumFloors","AssessLand","AssessTot","BldgArea")])
+}
+
+save(all_PLUTO_data, file="all_PLUTO_data.RData")
+load(all_PLUTO_data)
+
+library("class")
+library("ggplot2")
+
+library(plyr)
+
+count(all_PLUTO_data, "YearBuilt")
+
+```

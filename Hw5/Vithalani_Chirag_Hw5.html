@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  <head>
+    
+ 
+    <title></title>
+  </head>
+
+  <body>
+  
+  
+	Enter word to be reversed: <input type='text' id='wordField' value='HelloWorld' maxlength="20">&nbsp;
+	<button onclick='reverse()'>Reverse string</button><br/>
+   
+    <div id="displayDiv1">
+	
+	</div><br/><hr />
+	<form id="membershipform">
+	Enter Multiple (between 1 and 9):: <input type='number' id='multField' min="1" max="9">&nbsp;<input type="submit"  />
+	</form>
+	
+	<div id="displayDiv2">
+	
+	</div>
+    <script>
+		document.getElementById('membershipform').addEventListener("submit", function(e)
+		{
+				event.preventDefault();
+				formCollect() ;
+		});
+	
+		function reverse()
+		{
+			
+			var word=document.getElementById('wordField').value;
+			if(word)
+			{
+				var reversed= word.split("").reverse().join("");
+				document.getElementById("displayDiv1").innerHTML ="reverse of <b>"+word +"</b> is <b>"+reversed +"</b>"	;
+			}
+			else
+			{
+				document.getElementById("displayDiv1").innerHTML ="<b>Enter string to be reversed</b>"	;
+			}
+			
+		}
+	
+	
+		function formCollect() 
+		{
+			var multiple = document.getElementById('multField').value;
+			var pageString = '<table border="1">';
+			for (var j =0; j <=4; j++)
+			{
+				pageString += '<tr>';
+				for (var i =1; i <= 4; i++) 
+				{
+					pageString += '<td>' + multiple*(i+4*j) + '</td>';
+				}
+				pageString += '</tr>';
+			}
+			pageString += '</tr></table>';
+			
+			document.getElementById("displayDiv2").innerHTML = pageString;
+		}
+	</script>
+
+  </body>
+  <s
+</html>
+
